@@ -4,7 +4,8 @@ A fully-featured voice-activated assistant powered by Ollama for local LLM infer
 
 ## ✨ Features
 
-- 🎯 **Wake Word Detection**: Activate with "hello lamma"
+- 🎯 **Wake Word Detection**: Activate with "computer" (CLI mode)
+- 🌐 **Dual Modes**: CLI mode or beautiful web interface
 - 🎤 **Speech-to-Text**: Powered by Vosk (fully offline)
 - 🔊 **Text-to-Speech**: Using pyttsx3 (fully offline)
 - 🤖 **Ollama Integration**: Maintains conversation context
@@ -12,6 +13,7 @@ A fully-featured voice-activated assistant powered by Ollama for local LLM infer
 - 💬 **Session Management**: Remembers conversation history
 - 🔔 **Audio Feedback**: Beep notification when activated
 - 🎧 **Device Testing**: Test microphone and speaker before starting
+- 📱 **Web Interface**: Modern browser-based UI with visual conversation history
 
 ## 🚀 Quick Start
 
@@ -27,7 +29,28 @@ python setup_model.py
 
 # 3. Run the assistant
 python main.py
+
+# 4. Choose your mode:
+#    [1] CLI Mode  - Terminal-based with wake word
+#    [2] Web Mode  - Browser interface (no wake word needed)
 ```
+
+## 🌐 Two Ways to Use
+
+### CLI Mode (Traditional)
+- Use microphone directly in terminal
+- Say "computer" to activate
+- Hands-free operation
+- Always listening for wake word
+
+### Web Mode (New!)
+- Beautiful browser interface at http://127.0.0.1:5000
+- Click button to record
+- Visual conversation history
+- No wake word needed
+- Access from any device on your network
+
+See [WEB_MODE_GUIDE.md](WEB_MODE_GUIDE.md) for detailed web mode instructions!
 
 ## 🧪 Testing
 

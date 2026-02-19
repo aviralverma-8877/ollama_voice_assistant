@@ -11,5 +11,9 @@ PyAudio==0.2.14
 # HTTP Client for Ollama
 requests==2.31.0
 
+# Web Server
+Flask==3.0.0
+flask-cors==4.0.0
+
 # Audio file handling for beep sound
 scipy==1.11.4

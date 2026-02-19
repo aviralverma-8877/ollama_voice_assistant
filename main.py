@@ -19,6 +19,7 @@ if sys.platform == 'win32':
 from src.voice_assistant import VoiceAssistant
 from src.ollama_client import OllamaClient
 from src.audio_manager import AudioManager
+from src.web_server import start_web_server
 from src import config
 
 
@@ -95,6 +96,73 @@ def select_ollama_model() -> str:
 def main():
     """Entry point for the voice assistant"""
     try:
+        # Ask user to select mode
+        print("\n" + "=" * 70)
+        print("🎙️  VOICE ASSISTANT - MODE SELECTION")
+        print("=" * 70)
+        print("\nHow would you like to use the voice assistant?")
+        print("  [1] CLI Mode  - Use microphone directly in terminal")
+        print("  [2] Web Mode  - Launch web server with browser interface")
+
+        mode_choice = None
+        while True:
+            try:
+                choice = input("\nYour choice [1/2]: ").strip()
+                if choice in ['1', '2']:
+                    mode_choice = choice
+                    break
+                print("❌ Please enter 1 or 2")
+            except KeyboardInterrupt:
+                print("\n\n👋 Goodbye!")
+                sys.exit(0)
+
+        # Web Server Mode
+        if mode_choice == '2':
+            print("\n🌐 Starting web server mode...")
+
+            # Select model if enabled
+            selected_model = None
+            if config.PROMPT_MODEL_SELECTION:
+                selected_model = select_ollama_model()
+
+            # Get server settings
+            print("\n" + "=" * 70)
+            print("🌐 Web Server Configuration")
+            print("=" * 70)
+
+            host = "127.0.0.1"
+            port = 5000
+
+            print(f"\nDefault settings:")
+            print(f"  Host: {host}")
+            print(f"  Port: {port}")
+            print("\nUse custom settings?")
+            print("  [1] Yes - Let me configure")
+            print("  [2] No  - Use defaults")
+
+            try:
+                config_choice = input("\nYour choice [1/2]: ").strip()
+                if config_choice == '1':
+                    try:
+                        custom_host = input(f"Enter host (default: {host}): ").strip()
+                        if custom_host:
+                            host = custom_host
+
+                        custom_port = input(f"Enter port (default: {port}): ").strip()
+                        if custom_port:
+                            port = int(custom_port)
+                    except ValueError:
+                        print("⚠ Invalid port, using default")
+            except KeyboardInterrupt:
+                print("\n\n✓ Using default settings")
+
+            # Start web server
+            start_web_server(model=selected_model, host=host, port=port)
+            return
+
+        # CLI Mode (original behavior)
+        print("\n💻 Starting CLI mode...")
+
         interactive_setup = False
         selected_model = None
         test_devices = False
