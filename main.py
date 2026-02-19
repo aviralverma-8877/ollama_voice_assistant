@@ -242,38 +242,75 @@ def main():
             except KeyboardInterrupt:
                 print("\n\n✓ Using default settings")
 
-            # HTTPS/SSL Configuration
+            # Protocol Selection (HTTP vs HTTPS)
             ssl_cert = None
             ssl_key = None
 
-            if config.USE_HTTPS or os.path.exists(config.SSL_CERT_FILE):
-                print("\n" + "=" * 70)
-                print("🔐 HTTPS/SSL Configuration")
-                print("=" * 70)
+            print("\n" + "=" * 70)
+            print("🔐 Protocol Selection")
+            print("=" * 70)
 
-                if os.path.exists(config.SSL_CERT_FILE) and os.path.exists(config.SSL_KEY_FILE):
-                    print(f"\n✓ SSL certificate found: {config.SSL_CERT_FILE}")
-                    print(f"✓ SSL key found: {config.SSL_KEY_FILE}")
-                    print("\nDo you want to enable HTTPS?")
-                    print("  [1] Yes - Use HTTPS (secure)")
-                    print("  [2] No  - Use HTTP (default)")
+            # Check if certificates exist
+            certs_exist = os.path.exists(config.SSL_CERT_FILE) and os.path.exists(config.SSL_KEY_FILE)
 
-                    try:
-                        https_choice = input("\nYour choice [1/2]: ").strip()
-                        if https_choice == '1':
+            if certs_exist:
+                print(f"\n✓ SSL certificates found")
+                print(f"   Certificate: {config.SSL_CERT_FILE}")
+                print(f"   Private Key: {config.SSL_KEY_FILE}")
+            else:
+                print(f"\n⚠️  SSL certificates not found")
+                print(f"   To use HTTPS, generate certificates first:")
+                print(f"   Run: python generate_cert.py")
+
+            print("\nChoose protocol:")
+            print("  [1] HTTP  - Standard (no SSL, no browser warnings)")
+            print("  [2] HTTPS - Secure (encrypted, requires SSL certificates)")
+
+            use_https = False
+            while True:
+                try:
+                    protocol_choice = input("\nYour choice [1/2]: ").strip()
+
+                    if protocol_choice == '1':
+                        print("✓ Using HTTP")
+                        use_https = False
+                        break
+                    elif protocol_choice == '2':
+                        if certs_exist:
+                            print("✓ Using HTTPS")
                             ssl_cert = config.SSL_CERT_FILE
                             ssl_key = config.SSL_KEY_FILE
-                            print("✓ HTTPS enabled")
+                            use_https = True
+                            break
                         else:
-                            print("✓ Using HTTP")
-                    except KeyboardInterrupt:
-                        print("\n\n✓ Using HTTP")
-                else:
-                    print("\n⚠️  SSL certificate not found")
-                    print("\nTo enable HTTPS:")
-                    print("  1. Run: python generate_cert.py")
-                    print("  2. Restart the server")
-                    print("\nContinuing with HTTP...")
+                            print("\n❌ Cannot use HTTPS - certificates not found")
+                            print("\nOptions:")
+                            print("  [1] Continue with HTTP")
+                            print("  [2] Exit and generate certificates first")
+
+                            retry_choice = input("\nYour choice [1/2]: ").strip()
+                            if retry_choice == '1':
+                                print("✓ Using HTTP")
+                                use_https = False
+                                break
+                            else:
+                                print("\n📋 Steps to enable HTTPS:")
+                                print("  1. Exit this program (Ctrl+C or close window)")
+                                print("  2. Run: python generate_cert.py")
+                                print("  3. Run: python main.py again")
+                                print("\nExiting...")
+                                sys.exit(0)
+                    else:
+                        print("❌ Please enter 1 or 2")
+
+                except KeyboardInterrupt:
+                    print("\n\n✓ Using HTTP (default)")
+                    use_https = False
+                    break
+                except EOFError:
+                    print("\n✓ Using HTTP (default)")
+                    use_https = False
+                    break
 
             # Start web server
             start_web_server(model=selected_model, host=host, port=port,

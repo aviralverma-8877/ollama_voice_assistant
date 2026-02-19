@@ -77,19 +77,46 @@ python main.py
 Select Web Mode [2], and you'll see:
 
 ```
-🔐 HTTPS/SSL Configuration
+🔐 Protocol Selection
 
-✓ SSL certificate found: cert.pem
-✓ SSL key found: key.pem
+✓ SSL certificates found
+   Certificate: cert.pem
+   Private Key: key.pem
 
-Do you want to enable HTTPS?
-  [1] Yes - Use HTTPS (secure)
-  [2] No  - Use HTTP (default)
+Choose protocol:
+  [1] HTTP  - Standard (no SSL, no browser warnings)
+  [2] HTTPS - Secure (encrypted, requires SSL certificates)
 
-Your choice [1/2]: 1
+Your choice [1/2]: 2
 ```
 
-Select [1] to enable HTTPS.
+Select [2] to enable HTTPS.
+
+**If certificates don't exist:**
+
+If you try to select HTTPS without certificates, you'll see:
+
+```
+🔐 Protocol Selection
+
+⚠️  SSL certificates not found
+   To use HTTPS, generate certificates first:
+   Run: python generate_cert.py
+
+Choose protocol:
+  [1] HTTP  - Standard (no SSL, no browser warnings)
+  [2] HTTPS - Secure (encrypted, requires SSL certificates)
+
+Your choice [1/2]: 2
+
+❌ Cannot use HTTPS - certificates not found
+
+Options:
+  [1] Continue with HTTP
+  [2] Exit and generate certificates first
+```
+
+Select [2] to exit and run `python generate_cert.py` first, or [1] to continue with HTTP.
 
 ### Step 3: Access the Server
 
