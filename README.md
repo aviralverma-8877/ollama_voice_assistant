@@ -11,6 +11,7 @@ A fully-featured voice-activated assistant powered by Ollama for local LLM infer
 - 🔵 **Bluetooth Support**: Works with Bluetooth speakers/microphones
 - 💬 **Session Management**: Remembers conversation history
 - 🔔 **Audio Feedback**: Beep notification when activated
+- 🎧 **Device Testing**: Test microphone and speaker before starting
 
 ## 🚀 Quick Start
 
@@ -60,15 +61,18 @@ See [TEST_GUIDE.md](TEST_GUIDE.md) for detailed testing instructions.
 2. **Select Audio Devices**: Choose your microphone and speaker (optional)
    - Option 1: Manually select from available devices
    - Option 2: Use default devices
-3. **Select Ollama Model**: Choose which model to use (optional)
+3. **Test Devices**: Test your microphone and speaker (optional)
+   - Option 1: Test devices (records 3 seconds and plays back)
+   - Option 2: Skip test
+4. **Select Ollama Model**: Choose which model to use (optional)
    - Option 1: Select from available models
    - Option 2: Use current model (recommended)
-4. **Activate**: Say "hello lamma"
-5. **Listen**: Wait for the beep sound
-6. **Speak**: Ask your question
-7. **Hear**: Listen to the response
-8. **Continue**: Say "hello lamma" for next query
-9. **Exit**: Say "goodbye" to end
+5. **Activate**: Say "hello lamma"
+6. **Listen**: Wait for the beep sound
+7. **Speak**: Ask your question
+8. **Hear**: Listen to the response
+9. **Continue**: Say "hello lamma" for next query
+10. **Exit**: Say "goodbye" to end
 
 ## 📁 Project Structure
 
@@ -108,6 +112,7 @@ PROMPT_MODEL_SELECTION = True         # Ask user to select model on startup
 
 # Audio settings
 PROMPT_DEVICE_SELECTION = True        # Ask user to select audio devices on startup
+PROMPT_DEVICE_TEST = True             # Ask user to test devices on startup
 BLUETOOTH_DEVICE_NAME = None          # or "JBL Flip 5", etc.
 
 # Wake word
@@ -154,6 +159,29 @@ PROMPT_DEVICE_SELECTION = False  # Skip device selection prompt
 Or test device selection separately:
 ```bash
 python -m test.test_device_selection
+```
+
+### Test Audio Devices
+
+Verify your microphone and speaker are working before starting the assistant:
+
+```bash
+python main.py
+
+# You'll see:
+# [1] Yes - Test my devices
+# [2] No  - Skip test
+```
+
+The test will:
+- Play a beep to verify speaker output
+- Record 3 seconds of audio to test microphone
+- Check audio levels to detect if microphone is working
+- Offer to play back your recording for verification
+
+To disable this prompt, edit [src/config.py](src/config.py):
+```python
+PROMPT_DEVICE_TEST = False  # Skip device test prompt
 ```
 
 ### Select Ollama Model
