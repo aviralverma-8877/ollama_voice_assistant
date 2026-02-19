@@ -23,6 +23,87 @@ from src.web_server import start_web_server
 from src import config
 
 
+def configure_ollama_url() -> str:
+    """
+    Prompt user to configure Ollama API URL
+
+    Returns:
+        Configured Ollama URL, or default if not configured
+    """
+    print("\n" + "=" * 70)
+    print("🔗 Ollama API Configuration")
+    print("=" * 70)
+
+    print(f"\nℹ️  Current Ollama URL: {config.OLLAMA_URL}")
+    print("\nDo you want to configure a custom Ollama URL?")
+    print("  [1] Yes - Let me configure")
+    print("  [2] No  - Use default (localhost)")
+
+    while True:
+        try:
+            choice = input("\nYour choice [1/2]: ").strip()
+            if choice == '2':
+                print(f"✓ Using default URL: {config.OLLAMA_URL}")
+                return config.OLLAMA_URL
+            elif choice == '1':
+                break
+            print("❌ Please enter 1 or 2")
+        except KeyboardInterrupt:
+            print(f"\n\n✓ Using default URL: {config.OLLAMA_URL}")
+            return config.OLLAMA_URL
+
+    # Let user configure URL
+    print("\n" + "-" * 70)
+    print("\nCommon Ollama URLs:")
+    print("  • Local:  http://localhost:11434 (default)")
+    print("  • Remote: http://your-server-ip:11434")
+    print("  • Custom: https://your-domain.com")
+
+    while True:
+        try:
+            custom_url = input("\nEnter Ollama URL (or press Enter for default): ").strip()
+
+            if not custom_url:
+                print(f"✓ Using default URL: {config.OLLAMA_URL}")
+                return config.OLLAMA_URL
+
+            # Basic validation
+            if not (custom_url.startswith('http://') or custom_url.startswith('https://')):
+                print("❌ URL must start with http:// or https://")
+                continue
+
+            # Test connection
+            print(f"\n🔍 Testing connection to {custom_url}...")
+            temp_url = config.OLLAMA_URL
+            config.OLLAMA_URL = custom_url
+
+            try:
+                models = OllamaClient.get_available_models()
+                if models is not None:
+                    print(f"✓ Connection successful! Found {len(models)} model(s)")
+                    return custom_url
+                else:
+                    print("⚠ Could not connect to Ollama server")
+                    config.OLLAMA_URL = temp_url
+
+                    retry = input("\nTry another URL? [y/n]: ").strip().lower()
+                    if retry != 'y':
+                        print(f"✓ Using default URL: {config.OLLAMA_URL}")
+                        return config.OLLAMA_URL
+            except Exception as e:
+                print(f"⚠ Connection failed: {e}")
+                config.OLLAMA_URL = temp_url
+
+                retry = input("\nTry another URL? [y/n]: ").strip().lower()
+                if retry != 'y':
+                    print(f"✓ Using default URL: {config.OLLAMA_URL}")
+                    return config.OLLAMA_URL
+
+        except KeyboardInterrupt:
+            print(f"\n\n✓ Using default URL: {config.OLLAMA_URL}")
+            return config.OLLAMA_URL
+
+
 def select_ollama_model() -> str:
     """
     Prompt user to select an Ollama model
@@ -115,6 +196,11 @@ def main():
             except KeyboardInterrupt:
                 print("\n\n👋 Goodbye!")
                 sys.exit(0)
+
+        # Configure Ollama URL if enabled
+        if config.PROMPT_OLLAMA_URL_SELECTION:
+            ollama_url = configure_ollama_url()
+            config.OLLAMA_URL = ollama_url
 
         # Web Server Mode
         if mode_choice == '2':

@@ -36,7 +36,7 @@ if errorlevel 1 (
         echo [ERROR] Python is not installed or not in PATH
         echo.
         echo Please install Python 3.9, 3.10, or 3.11 from:
-        echo   https://www.python.org/downloads/
+        echo   python.org/downloads
         echo.
         pause
         exit /b 1
@@ -81,7 +81,7 @@ if errorlevel 1 (
     echo [ERROR] Python is not installed or not in PATH
     echo.
     echo Please install Python 3.9, 3.10, or 3.11 from:
-    echo   https://www.python.org/downloads/
+    echo   python.org/downloads
     echo.
     pause
     exit /b 1
@@ -134,7 +134,7 @@ echo   RECOMMENDED ACTION
 echo ======================================================================
 echo.
 echo 1. Install Python 3.11 (recommended):
-echo    https://www.python.org/downloads/
+echo    python.org/downloads
 echo.
 echo 2. Then run this script again
 echo.
@@ -181,7 +181,7 @@ if exist "venv" (
         echo.
         echo Try:
         echo   1. Delete the venv folder if it exists
-        echo   2. Install Python 3.11 from https://www.python.org/
+        echo   2. Install Python 3.11 from python.org
         echo   3. Run this script again
         echo.
         pause
@@ -228,7 +228,9 @@ echo [INFO] Installing requirements from requirements.txt...
 echo [INFO] This may take several minutes...
 echo.
 pip install -r requirements.txt
-if errorlevel 1 (
+set PIP_EXIT_CODE=%ERRORLEVEL%
+
+if not "%PIP_EXIT_CODE%"=="0" (
     echo.
     echo ======================================================================
     echo   INSTALLATION FAILED
@@ -238,20 +240,21 @@ if errorlevel 1 (
     echo.
     echo Common issues and solutions:
     echo.
-    echo 1. NUMPY/SCIPY COMPILATION ERRORS (vswhere.exe missing):
+    echo 1. NUMPY/SCIPY COMPILATION ERRORS: vswhere.exe missing
     echo    - You're using Python 3.13 which lacks prebuilt wheels
-    echo    - Solution: Install Python 3.11 and delete 'venv' folder
-    echo    - Download: https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe
+    echo    - Solution: Install Python 3.11 and delete venv folder
+    echo    - Download from python.org
     echo.
     echo 2. PYAUDIO INSTALLATION FAILURE:
-    echo    - Download wheel from: https://www.lfd.uci.edu/~gohlke/pythonlibs/
-    echo    - Install manually: pip install PyAudio-0.2.14-cpXX-cpXX-win_amd64.whl
+    echo    - Download wheel from gohlke pythonlibs
+    echo    - Install manually with pip install
     echo.
     echo 3. PYBLUEZ2 INSTALLATION FAILURE:
-    echo    - Requires Visual C++ Build Tools (optional, only needed for Bluetooth)
+    echo    - Requires Visual C++ Build Tools
+    echo    - Optional - only needed for Bluetooth
     echo    - Can be skipped by removing from requirements.txt
     echo.
-    echo See guide/PYTHON_COMPATIBILITY.md for detailed troubleshooting
+    echo See guide\PYTHON_COMPATIBILITY.md for detailed troubleshooting
     echo.
     echo ======================================================================
     echo.
@@ -273,14 +276,15 @@ if exist "models\vosk-model-small-en-us-0.15" (
     echo [INFO] Vosk model already exists
     echo.
 ) else (
-    echo [INFO] Downloading Vosk model (this may take a few minutes)...
+    echo [INFO] Downloading Vosk model (this may take a few minutes^)...
     python setup_model.py
-    if errorlevel 1 (
+    set MODEL_EXIT_CODE=%ERRORLEVEL%
+
+    if not "%MODEL_EXIT_CODE%"=="0" (
         echo [ERROR] Failed to download Vosk model
         echo.
-        echo [TIP] You can manually download from:
-        echo   https://alphacephei.com/vosk/models
-        echo   Extract to: models\vosk-model-small-en-us-0.15
+        echo [TIP] You can manually download from alphacephei.com/vosk/models
+        echo      Extract to models\vosk-model-small-en-us-0.15
         echo.
         pause
         exit /b 1

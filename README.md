@@ -96,28 +96,32 @@ See [TEST_GUIDE.md](guide/TEST_GUIDE.md) for detailed testing instructions.
 
 - **Python 3.9, 3.10, or 3.11** (3.9 recommended for best compatibility)
   - See [PYTHON_COMPATIBILITY.md](guide/PYTHON_COMPATIBILITY.md) for version details
-- **Ollama** running on your server (configured URL: `https://home.iot-connect.in`)
+- **Ollama** running locally or on a remote server (default: `http://localhost:11434`)
+  - Install from [ollama.ai](https://ollama.ai/)
+  - Configure custom URL during startup if needed
 - **Microphone** for voice input
 - **Speakers** for audio output (Bluetooth supported)
 
 ## 🎮 How to Use
 
 1. **Start**: Run `python main.py`
-2. **Select Audio Devices**: Choose your microphone and speaker (optional)
+2. **Configure Ollama URL**: Set API endpoint (optional)
+   - Option 1: Configure custom URL (e.g., remote server)
+   - Option 2: Use default (http://localhost:11434)
+3. **Select Audio Devices**: Choose your microphone and speaker (optional)
    - Option 1: Manually select from available devices
    - Option 2: Use default devices
-3. **Test Devices**: Test your microphone and speaker (optional)
+4. **Test Devices**: Test your microphone and speaker (optional)
    - Option 1: Test devices (records 3 seconds and plays back)
    - Option 2: Skip test
-4. **Select Ollama Model**: Choose which model to use (optional)
+5. **Select Ollama Model**: Choose which model to use (optional)
    - Option 1: Select from available models
    - Option 2: Use current model (recommended)
-5. **Activate**: Say "hello lamma"
-6. **Listen**: Wait for the beep sound
-7. **Speak**: Ask your question
-8. **Hear**: Listen to the response
-9. **Continue**: Say "hello lamma" for next query
-10. **Exit**: Say "goodbye" to end
+7. **Listen**: Wait for the beep sound
+8. **Speak**: Ask your question
+9. **Hear**: Listen to the response
+10. **Continue**: Say "hello lamma" for next query
+11. **Exit**: Say "goodbye" to end
 
 ## 📁 Project Structure
 
@@ -151,9 +155,10 @@ Edit [src/config.py](src/config.py) to customize:
 
 ```python
 # Ollama settings
-OLLAMA_URL = "https://home.iot-connect.in"
-OLLAMA_MODEL = "gemma3:4b"            # Default model
-PROMPT_MODEL_SELECTION = True         # Ask user to select model on startup
+OLLAMA_URL = "http://localhost:11434"    # Default Ollama URL
+OLLAMA_MODEL = "gemma3:4b"               # Default model
+PROMPT_OLLAMA_URL_SELECTION = True       # Ask user to configure Ollama URL on startup
+PROMPT_MODEL_SELECTION = True            # Ask user to select model on startup
 
 # Audio settings
 PROMPT_DEVICE_SELECTION = True        # Ask user to select audio devices on startup

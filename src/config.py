@@ -1,8 +1,9 @@
 # Configuration for Ollama Voice Assistant
 
 # Ollama Configuration
-OLLAMA_URL = "https://home.iot-connect.in"
+OLLAMA_URL = "http://localhost:11434"  # Default to local Ollama instance
 OLLAMA_MODEL = "gemma3:4b"  # Change to your preferred model (e.g., llama3, mistral, etc.)
+PROMPT_OLLAMA_URL_SELECTION = True  # Prompt user to configure Ollama URL on startup
 PROMPT_MODEL_SELECTION = True  # Prompt user to select Ollama model on startup
 
 # Audio Configuration
