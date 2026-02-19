@@ -3,6 +3,7 @@
 # Ollama Configuration
 OLLAMA_URL = "https://home.iot-connect.in"
 OLLAMA_MODEL = "gemma3:4b"  # Change to your preferred model (e.g., llama3, mistral, etc.)
+PROMPT_MODEL_SELECTION = True  # Prompt user to select Ollama model on startup
 
 # Audio Configuration
 SAMPLE_RATE = 16000  # Vosk works best with 16kHz

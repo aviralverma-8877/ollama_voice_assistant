@@ -21,12 +21,13 @@ from . import config
 class VoiceAssistant:
     """Main voice assistant controller"""
 
-    def __init__(self, interactive_audio_setup: bool = False):
+    def __init__(self, interactive_audio_setup: bool = False, model: str = None):
         """
         Initialize all components
 
         Args:
             interactive_audio_setup: If True, prompt user to select audio devices
+            model: Ollama model name to use (uses config default if not provided)
         """
         print("=" * 60)
         print("🎙️  OLLAMA VOICE ASSISTANT")
@@ -38,7 +39,7 @@ class VoiceAssistant:
             self.wake_word_detector = WakeWordDetector()
             self.stt = SpeechToText()
             self.tts = TextToSpeech()
-            self.ollama = OllamaClient()
+            self.ollama = OllamaClient(model=model)
 
             # Session state
             self.session_active = False

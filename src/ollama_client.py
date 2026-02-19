@@ -23,6 +23,28 @@ class OllamaClient:
         print(f"   URL: {self.base_url}")
         print(f"   Model: {self.model}")
 
+    @staticmethod
+    def get_available_models(base_url: str = None) -> Optional[List[Dict[str, str]]]:
+        """
+        Get list of available models from Ollama server
+
+        Args:
+            base_url: Ollama server URL (uses config if not provided)
+
+        Returns:
+            List of model dictionaries with 'name', 'size', 'modified_at' keys,
+            or None if connection fails
+        """
+        url = (base_url or config.OLLAMA_URL).rstrip('/')
+        try:
+            response = requests.get(f"{url}/api/tags", timeout=5)
+            response.raise_for_status()
+            models = response.json().get("models", [])
+            return models
+        except Exception as e:
+            print(f"❌ Could not fetch models from {url}: {e}")
+            return None
+
     def chat(self, user_message: str, maintain_context: bool = True) -> str:
         """
         Send a message to Ollama and get a response

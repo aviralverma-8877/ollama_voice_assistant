@@ -59,13 +59,16 @@ See [TEST_GUIDE.md](TEST_GUIDE.md) for detailed testing instructions.
 1. **Start**: Run `python main.py`
 2. **Select Audio Devices**: Choose your microphone and speaker (optional)
    - Option 1: Manually select from available devices
-   - Option 2: Use default devices (recommended for most users)
-3. **Activate**: Say "hello lamma"
-4. **Listen**: Wait for the beep sound
-5. **Speak**: Ask your question
-6. **Hear**: Listen to the response
-7. **Continue**: Say "hello lamma" for next query
-8. **Exit**: Say "goodbye" to end
+   - Option 2: Use default devices
+3. **Select Ollama Model**: Choose which model to use (optional)
+   - Option 1: Select from available models
+   - Option 2: Use current model (recommended)
+4. **Activate**: Say "hello lamma"
+5. **Listen**: Wait for the beep sound
+6. **Speak**: Ask your question
+7. **Hear**: Listen to the response
+8. **Continue**: Say "hello lamma" for next query
+9. **Exit**: Say "goodbye" to end
 
 ## 📁 Project Structure
 
@@ -100,11 +103,12 @@ Edit [src/config.py](src/config.py) to customize:
 ```python
 # Ollama settings
 OLLAMA_URL = "https://home.iot-connect.in"
-OLLAMA_MODEL = "gemma3:4b"  # Change to llama3, mistral, etc.
+OLLAMA_MODEL = "gemma3:4b"            # Default model
+PROMPT_MODEL_SELECTION = True         # Ask user to select model on startup
 
 # Audio settings
-PROMPT_DEVICE_SELECTION = True  # Ask user to select audio devices on startup
-BLUETOOTH_DEVICE_NAME = None    # or "JBL Flip 5", etc.
+PROMPT_DEVICE_SELECTION = True        # Ask user to select audio devices on startup
+BLUETOOTH_DEVICE_NAME = None          # or "JBL Flip 5", etc.
 
 # Wake word
 WAKE_WORD = "hello lamma"
@@ -151,6 +155,30 @@ Or test device selection separately:
 ```bash
 python -m test.test_device_selection
 ```
+
+### Select Ollama Model
+
+Choose from available Ollama models when starting:
+
+```bash
+python main.py
+
+# You'll see:
+# [1] Yes - Let me choose a model
+# [2] No  - Use current model
+```
+
+To disable this prompt, edit [src/config.py](src/config.py):
+```python
+PROMPT_MODEL_SELECTION = False  # Skip model selection prompt
+```
+
+Or list available models:
+```bash
+python -m test.test_model_selection
+```
+
+See [MODEL_SELECTION_GUIDE.md](MODEL_SELECTION_GUIDE.md) for detailed information.
 
 ### Change Voice
 ```python
