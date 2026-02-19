@@ -18,6 +18,18 @@ This is perfect for:
 - Better conversation history viewing
 - Multi-user access (everyone on the same network can use it)
 
+## ⚠️ Important: Windows Firewall
+
+**If you want to access from other devices (phones, tablets), you must configure Windows Firewall:**
+
+1. Right-click `allow_firewall.bat`
+2. Select **"Run as administrator"**
+3. This allows incoming connections on port 5000
+
+Without this step, only your local computer can access the web interface.
+
+See [NETWORK_ACCESS.md](NETWORK_ACCESS.md) for detailed network setup instructions!
+
 ## 🚀 How to Use Web Mode
 
 ### Step 1: Start the Assistant
@@ -195,12 +207,21 @@ pip install -r requirements.txt
 
 ### Can't Access from Another Device
 
-**Solutions:**
-1. The default settings should work (host: 0.0.0.0)
-2. Check your firewall settings - allow port 5000
-3. Ensure both devices are on the same network (same WiFi)
-4. Use the network URL shown when server starts
-5. Make sure you're using your computer's IP, not localhost or 127.0.0.1
+**Most Common Cause: Windows Firewall is blocking connections**
+
+**Solution:** Run `allow_firewall.bat` as administrator (right-click → Run as administrator)
+
+**Other Solutions:**
+1. Verify firewall rule exists:
+   ```bash
+   netsh advfirewall firewall show rule name="Ollama Voice Assistant Web Server"
+   ```
+2. Ensure both devices are on the same WiFi network
+3. Use the network URL shown when server starts (not localhost)
+4. Check if antivirus software is blocking connections
+5. Try disabling Windows Firewall temporarily to test
+
+**See [NETWORK_ACCESS.md](NETWORK_ACCESS.md) for complete troubleshooting guide**
 
 ## 🔒 Security Notes
 

@@ -72,8 +72,10 @@ python main.py
 - Visual conversation history
 - No wake word needed
 - Access from any device on your network (phones, tablets, laptops)
+- **Windows users:** Run `allow_firewall.bat` as administrator to enable network access
 
 See [WEB_MODE_GUIDE.md](guide/WEB_MODE_GUIDE.md) for detailed web mode instructions!
+See [NETWORK_ACCESS.md](guide/NETWORK_ACCESS.md) for network setup help!
 
 ## 🧪 Testing
 
