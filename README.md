@@ -39,7 +39,7 @@ run.bat
 
 ### Manual Installation
 
-See [QUICKSTART.md](QUICKSTART.md) for a step-by-step guide!
+See [QUICKSTART.md](guide/QUICKSTART.md) for a step-by-step guide!
 
 ```bash
 # 1. Install dependencies
@@ -71,7 +71,7 @@ python main.py
 - No wake word needed
 - Access from any device on your network
 
-See [WEB_MODE_GUIDE.md](WEB_MODE_GUIDE.md) for detailed web mode instructions!
+See [WEB_MODE_GUIDE.md](guide/WEB_MODE_GUIDE.md) for detailed web mode instructions!
 
 ## 🧪 Testing
 
@@ -90,7 +90,7 @@ python -m test.test_simple
 # Check output files in test_outputs/ directory
 ```
 
-See [TEST_GUIDE.md](TEST_GUIDE.md) for detailed testing instructions.
+See [TEST_GUIDE.md](guide/TEST_GUIDE.md) for detailed testing instructions.
 
 ## 📋 Requirements
 
@@ -178,7 +178,7 @@ SESSION_TIMEOUT = 300       # Auto-end after 5 min inactivity
 - **Model not found**: Pull the model with `ollama pull gemma3`
 
 ### Installation Issues
-- **PyAudio fails on Windows**: Install from wheel file (see [QUICKSTART.md](QUICKSTART.md))
+- **PyAudio fails on Windows**: Install from wheel file (see [QUICKSTART.md](guide/QUICKSTART.md))
 - **Vosk model missing**: Run `python setup_model.py`
 
 ## 🎨 Customization
@@ -250,7 +250,7 @@ Or list available models:
 python -m test.test_model_selection
 ```
 
-See [MODEL_SELECTION_GUIDE.md](MODEL_SELECTION_GUIDE.md) for detailed information.
+See [MODEL_SELECTION_GUIDE.md](guide/MODEL_SELECTION_GUIDE.md) for detailed information.
 
 ### Change Voice
 ```python
