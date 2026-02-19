@@ -17,9 +17,30 @@ A fully-featured voice-activated assistant powered by Ollama for local LLM infer
 
 ## 🚀 Quick Start
 
+### Windows - One-Click Deployment (Recommended)
+
+**First time setup:**
+```bash
+# Double-click deploy.bat or run:
+deploy.bat
+```
+
+This will automatically:
+- ✅ Create virtual environment
+- ✅ Install all dependencies
+- ✅ Download Vosk model
+- ✅ Launch the assistant
+
+**Subsequent launches:**
+```bash
+# Double-click run.bat or run:
+run.bat
+```
+
+### Manual Installation
+
 See [QUICKSTART.md](QUICKSTART.md) for a step-by-step guide!
 
-**TL;DR:**
 ```bash
 # 1. Install dependencies
 pip install -r requirements.txt
