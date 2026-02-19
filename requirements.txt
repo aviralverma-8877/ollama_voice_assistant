@@ -1,0 +1,15 @@
+# Audio and Speech Processing
+vosk==0.3.45
+sounddevice==0.4.6
+numpy==1.24.3
+pyttsx3==2.90
+
+# Bluetooth and Audio
+pybluez2==0.46
+PyAudio==0.2.14
+
+# HTTP Client for Ollama
+requests==2.31.0
+
+# Audio file handling for beep sound
+scipy==1.11.4
