@@ -218,13 +218,22 @@ class WebServer:
 
     def run(self):
         """Start the web server"""
-        # Get local IP address
-        local_ip = "localhost"
+        # Get local IPv4 address
+        local_ipv4 = None
         try:
-            # Get the local IP address
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
-            local_ip = s.getsockname()[0]
+            local_ipv4 = s.getsockname()[0]
+            s.close()
+        except:
+            pass
+
+        # Get local IPv6 address
+        local_ipv6 = None
+        try:
+            s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+            s.connect(("2001:4860:4860::8888", 80))  # Google DNS IPv6
+            local_ipv6 = s.getsockname()[0]
             s.close()
         except:
             pass
@@ -237,9 +246,19 @@ class WebServer:
         print("=" * 70)
         print(f"\n🔗 Access the web interface from:")
 
-        if self.host == "0.0.0.0":
+        if self.host == "0.0.0.0" or self.host == "::":
+            # Show local access
             print(f"   • Local:   {protocol}://localhost:{self.port}")
-            print(f"   • Network: {protocol}://{local_ip}:{self.port}")
+
+            # Show IPv4 address if available
+            if local_ipv4:
+                print(f"   • IPv4:    {protocol}://{local_ipv4}:{self.port}")
+
+            # Show IPv6 address if available
+            if local_ipv6:
+                # Format IPv6 address for URL (needs brackets)
+                print(f"   • IPv6:    {protocol}://[{local_ipv6}]:{self.port}")
+
             print(f"\n💡 Share the network URL with other devices on your local network")
         else:
             print(f"   {protocol}://{self.host}:{self.port}")

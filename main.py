@@ -216,11 +216,11 @@ def main():
             print("🌐 Web Server Configuration")
             print("=" * 70)
 
-            host = "0.0.0.0"  # Listen on all network interfaces
+            host = "0.0.0.0"  # Listen on all network interfaces (IPv4 + IPv6 dual-stack)
             port = 5000
 
             print(f"\nDefault settings:")
-            print(f"  Host: {host} (accessible on local network)")
+            print(f"  Host: {host} (IPv4 + IPv6, accessible on local network)")
             print(f"  Port: {port}")
             print("\nUse custom settings?")
             print("  [1] Yes - Let me configure")

@@ -36,21 +36,28 @@ This creates a firewall rule allowing incoming connections on port 5000.
 
 ### Step 3: Find Your IP Address
 
-The server automatically displays your network IP when it starts:
+The server automatically displays your network IP addresses when it starts:
 
 ```
 🔗 Access the web interface from:
    • Local:   http://localhost:5000
-   • Network: http://192.168.1.100:5000
+   • IPv4:    http://192.168.1.100:5000
+   • IPv6:    http://[fe80::1234:5678:90ab:cdef]:5000
+
+💡 Share the network URL with other devices on your local network
 ```
 
-Or find it manually:
+**Note:** Both IPv4 and IPv6 addresses are shown when available.
+
+Or find them manually:
 
 ```bash
 # Windows
 ipconfig
 
-# Look for "IPv4 Address" under your active network adapter
+# Look for:
+# - "IPv4 Address" (e.g., 192.168.1.100)
+# - "IPv6 Address" (e.g., fe80::1234:5678:90ab:cdef)
 ```
 
 ### Step 4: Connect from Other Devices
@@ -209,6 +216,34 @@ If you only want local access:
 ### Multiple Network Interfaces
 
 If you have multiple network adapters (WiFi + Ethernet), the server binds to all interfaces (0.0.0.0). You can access it via any of your IP addresses.
+
+### IPv6 Support
+
+The server supports both IPv4 and IPv6 simultaneously (dual-stack):
+
+**IPv6 Address Format:**
+- IPv6 addresses in URLs must be enclosed in brackets
+- Example: `http://[fe80::1]:5000`
+- The server automatically displays the correct format
+
+**Finding Your IPv6 Address:**
+```bash
+# Windows
+ipconfig
+
+# Look for "IPv6 Address" or "Link-local IPv6 Address"
+# Example: fe80::1234:5678:90ab:cdef%12
+```
+
+**Using IPv6:**
+1. The server shows your IPv6 address when it starts
+2. Copy the entire URL including brackets
+3. Access from other devices on the same network
+
+**IPv6 Notes:**
+- Link-local addresses (fe80::) work only on the same network segment
+- Global IPv6 addresses work across the internet (if firewall allows)
+- Most modern devices support IPv6 automatically
 
 ## ❓ FAQ
 
