@@ -222,6 +222,9 @@ class AudioManager:
             callback: Function called with each audio chunk. Return False to stop recording.
             chunk_duration: Duration of each chunk in seconds
         """
+        # Flag to control the stream loop
+        stream_active = [True]  # Using list to allow modification in nested function
+
         def audio_callback(indata, frames, time_info, status):
             if status:
                 print(f"Audio status: {status}")
@@ -231,6 +234,7 @@ class AudioManager:
 
             # If callback returns False, stop the stream
             if not callback(audio_chunk):
+                stream_active[0] = False  # Signal to stop
                 raise sd.CallbackAbort
 
         try:
@@ -243,8 +247,8 @@ class AudioManager:
                 device=self.input_device,
                 blocksize=int(chunk_duration * self.sample_rate)
             ):
-                # Keep stream open until callback aborts it
-                while True:
+                # Keep stream open until callback signals to stop
+                while stream_active[0]:
                     sd.sleep(100)
         except sd.CallbackAbort:
             pass
