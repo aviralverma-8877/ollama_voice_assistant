@@ -94,7 +94,8 @@ See [TEST_GUIDE.md](guide/TEST_GUIDE.md) for detailed testing instructions.
 
 ## 📋 Requirements
 
-- **Python 3.8+**
+- **Python 3.9, 3.10, or 3.11** (3.9 recommended for best compatibility)
+  - See [PYTHON_COMPATIBILITY.md](guide/PYTHON_COMPATIBILITY.md) for version details
 - **Ollama** running on your server (configured URL: `https://home.iot-connect.in`)
 - **Microphone** for voice input
 - **Speakers** for audio output (Bluetooth supported)

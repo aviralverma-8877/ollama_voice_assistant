@@ -7,6 +7,7 @@ This directory contains all the documentation and guides for the Ollama Voice As
 ### Setup & Installation
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick start guide for new users
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Automated deployment with deploy.bat
+- **[PYTHON_COMPATIBILITY.md](PYTHON_COMPATIBILITY.md)** - Python version compatibility guide
 
 ### Features & Usage
 - **[WEB_MODE_GUIDE.md](WEB_MODE_GUIDE.md)** - Complete guide to web mode

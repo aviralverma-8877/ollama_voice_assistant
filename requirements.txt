@@ -1,7 +1,7 @@
 # Audio and Speech Processing
 vosk==0.3.45
 sounddevice==0.4.6
-numpy==1.24.3
+numpy>=1.24.0,<2.0.0  # Flexible version range for better compatibility
 pyttsx3==2.90
 
 # Bluetooth and Audio
@@ -15,5 +15,5 @@ requests==2.31.0
 Flask==3.0.0
 flask-cors==4.0.0
 
-# Audio file handling for beep sound
-scipy==1.11.4
+# Audio file handling for beep sound and resampling
+scipy>=1.11.0,<2.0.0  # Flexible version range for better compatibility
