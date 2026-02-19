@@ -255,12 +255,45 @@ class WebServer:
         print("=" * 70 + "\n")
 
         try:
-            if self.use_ssl:
-                # Create SSL context
-                ssl_context = (self.ssl_cert, self.ssl_key)
-                self.app.run(host=self.host, port=self.port, debug=False, ssl_context=ssl_context)
-            else:
-                self.app.run(host=self.host, port=self.port, debug=False)
+            # Try to use production server (Waitress) if configured
+            use_waitress = config.USE_PRODUCTION_SERVER
+
+            if use_waitress:
+                try:
+                    from waitress import serve
+                    print("ℹ️  Using Waitress production server")
+
+                    if self.use_ssl:
+                        # Waitress doesn't support SSL directly - recommend using reverse proxy
+                        print("\n⚠️  Note: Waitress doesn't support SSL directly.")
+                        print("   For HTTPS with Waitress, use a reverse proxy (nginx/Apache)")
+                        print("   or use Flask development server instead.\n")
+                        print("Falling back to Flask development server with SSL...")
+                        use_waitress = False
+                    else:
+                        # Use Waitress for HTTP
+                        serve(self.app,
+                              host=self.host,
+                              port=self.port,
+                              threads=config.PRODUCTION_THREADS)
+                        return
+                except ImportError:
+                    print("\n⚠️  Waitress not installed. Using Flask development server.")
+                    print("   Install with: pip install waitress\n")
+                    use_waitress = False
+
+            # Fall back to Flask development server
+            if not use_waitress or self.use_ssl:
+                if not use_waitress:
+                    print("ℹ️  Using Flask development server")
+
+                if self.use_ssl:
+                    # Create SSL context
+                    ssl_context = (self.ssl_cert, self.ssl_key)
+                    self.app.run(host=self.host, port=self.port, debug=False, ssl_context=ssl_context)
+                else:
+                    self.app.run(host=self.host, port=self.port, debug=False)
+
         except KeyboardInterrupt:
             print("\n\n⏹  Server stopped by user")
 

@@ -46,3 +46,7 @@ BEEP_DURATION = 0.2  # Seconds
 USE_HTTPS = False  # Set to True to enable HTTPS
 SSL_CERT_FILE = "cert.pem"  # Path to SSL certificate file
 SSL_KEY_FILE = "key.pem"  # Path to SSL private key file
+
+# Production Server Configuration
+USE_PRODUCTION_SERVER = True  # Use Waitress (production) instead of Flask dev server
+PRODUCTION_THREADS = 4  # Number of worker threads for production server
