@@ -25,6 +25,19 @@ if not exist "venv" (
 echo [INFO] Activating virtual environment...
 call venv\Scripts\activate.bat
 
+if errorlevel 1 (
+    echo [ERROR] Failed to activate virtual environment
+    echo.
+    echo Try running deploy.bat again to fix the environment.
+    echo.
+    pause
+    exit /b 1
+)
+
+echo [INFO] Python version in use:
+python --version
+echo.
+
 echo [INFO] Starting Voice Assistant...
 echo.
 
