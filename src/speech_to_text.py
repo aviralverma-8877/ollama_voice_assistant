@@ -6,6 +6,7 @@ import json
 import os
 from vosk import Model, KaldiRecognizer
 import numpy as np
+from scipy import signal
 from . import config
 
 
@@ -39,21 +40,73 @@ class SpeechToText:
         """Create a new recognizer instance"""
         return KaldiRecognizer(self.model, self.sample_rate)
 
-    def transcribe_audio(self, audio_data: np.ndarray) -> str:
+    def transcribe_audio(self, audio_data: np.ndarray, source_sample_rate: int = None) -> str:
         """
         Transcribe audio data to text
 
         Args:
-            audio_data: Audio data as numpy array (int16)
+            audio_data: Audio data as numpy array (int16 or float32)
+            source_sample_rate: Original sample rate of the audio (if None, assumes config.SAMPLE_RATE)
 
         Returns:
             Transcribed text
         """
         recognizer = self.create_recognizer()
 
-        # Convert numpy array to bytes
-        if audio_data.dtype != np.int16:
-            audio_data = (audio_data * 32767).astype(np.int16)
+        # Debug info
+        print(f"   Audio shape: {audio_data.shape}, dtype: {audio_data.dtype}")
+        print(f"   Audio range: min={np.min(audio_data):.4f}, max={np.max(audio_data):.4f}")
+
+        # Convert stereo to mono if needed
+        if len(audio_data.shape) > 1 and audio_data.shape[1] > 1:
+            print(f"   Converting stereo to mono...")
+            # Average the channels
+            audio_data = np.mean(audio_data, axis=1)
+
+        # Ensure audio is 1D array
+        if len(audio_data.shape) > 1:
+            print(f"   Flattening audio array from shape {audio_data.shape}")
+            audio_data = audio_data.flatten()
+
+        # Determine source sample rate
+        if source_sample_rate is None:
+            source_sample_rate = self.sample_rate
+
+        # Resample if needed
+        if source_sample_rate != self.sample_rate:
+            print(f"   Resampling from {source_sample_rate} Hz to {self.sample_rate} Hz...")
+            # Convert to float for resampling
+            if audio_data.dtype == np.int16:
+                audio_float = audio_data.astype(np.float32) / 32767.0
+            else:
+                audio_float = audio_data.astype(np.float32)
+
+            # Calculate number of samples after resampling
+            num_samples = int(len(audio_float) * self.sample_rate / source_sample_rate)
+
+            # Resample using scipy
+            audio_resampled = signal.resample(audio_float, num_samples)
+
+            # Convert back to int16
+            audio_data = (audio_resampled * 32767).astype(np.int16)
+        else:
+            # Convert numpy array to int16 if needed
+            if audio_data.dtype != np.int16:
+                audio_data = (audio_data * 32767).astype(np.int16)
+
+        # Apply automatic gain control if signal is too weak
+        max_amplitude = np.max(np.abs(audio_data))
+        if max_amplitude > 0:
+            target_amplitude = 10000  # Target level (about 30% of max)
+            if max_amplitude < 3000:  # If signal is weak (< 10% of max)
+                gain = min(target_amplitude / max_amplitude, 10.0)  # Cap gain at 10x
+                print(f"   ⚠ Low audio level detected ({max_amplitude}). Applying {gain:.1f}x gain...")
+                audio_data = np.clip(audio_data * gain, -32767, 32767).astype(np.int16)
+                print(f"   New max amplitude: {np.max(np.abs(audio_data))}")
+
+        # Final debug info
+        print(f"   Final audio shape: {audio_data.shape}, dtype: {audio_data.dtype}")
+        print(f"   Processing {len(audio_data)} samples...")
 
         audio_bytes = audio_data.tobytes()
 
@@ -63,6 +116,8 @@ class SpeechToText:
         # Get result
         result = json.loads(recognizer.FinalResult())
         text = result.get('text', '').strip()
+
+        print(f"   Vosk result: {result}")
 
         return text
 
