@@ -273,6 +273,8 @@
         let audioChunks = [];
         let isRecording = false;
         let currentAudio = null;
+        let audioContext;
+        let stream;
 
         const micButton = document.getElementById('micButton');
         const status = document.getElementById('status');
@@ -322,27 +324,101 @@
             }
         }
 
+        // Convert AudioBuffer to WAV
+        function audioBufferToWav(audioBuffer) {
+            const numOfChan = audioBuffer.numberOfChannels;
+            const length = audioBuffer.length * numOfChan * 2 + 44;
+            const buffer = new ArrayBuffer(length);
+            const view = new DataView(buffer);
+            const channels = [];
+            let offset = 0;
+            let pos = 0;
+
+            // Write WAV header
+            const setUint16 = (data) => {
+                view.setUint16(pos, data, true);
+                pos += 2;
+            };
+            const setUint32 = (data) => {
+                view.setUint32(pos, data, true);
+                pos += 4;
+            };
+
+            // RIFF identifier
+            setUint32(0x46464952);
+            // File length
+            setUint32(length - 8);
+            // RIFF type
+            setUint32(0x45564157);
+            // Format chunk identifier
+            setUint32(0x20746d66);
+            // Format chunk length
+            setUint32(16);
+            // Sample format (raw)
+            setUint16(1);
+            // Channel count
+            setUint16(numOfChan);
+            // Sample rate
+            setUint32(audioBuffer.sampleRate);
+            // Byte rate
+            setUint32(audioBuffer.sampleRate * 2 * numOfChan);
+            // Block align
+            setUint16(numOfChan * 2);
+            // Bits per sample
+            setUint16(16);
+            // Data chunk identifier
+            setUint32(0x61746164);
+            // Data chunk length
+            setUint32(length - pos - 4);
+
+            // Write audio data
+            for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
+                channels.push(audioBuffer.getChannelData(i));
+            }
+
+            while (pos < length) {
+                for (let i = 0; i < numOfChan; i++) {
+                    let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
         // Start recording
         async function startRecording() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        channelCount: 1,
+                        sampleRate: 16000,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    }
+                });
 
-                mediaRecorder = new MediaRecorder(stream);
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                    sampleRate: 16000
+                });
+                const source = audioContext.createMediaStreamSource(stream);
+                const processor = audioContext.createScriptProcessor(4096, 1, 1);
+
                 audioChunks = [];
 
-                mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+
+                processor.onaudioprocess = (e) => {
+                    if (isRecording) {
+                        const inputData = e.inputBuffer.getChannelData(0);
+                        audioChunks.push(new Float32Array(inputData));
+                    }
                 };
 
-                mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    await processAudio(audioBlob);
-
-                    // Stop all tracks
-                    stream.getTracks().forEach(track => track.stop());
-                };
-
-                mediaRecorder.start();
                 isRecording = true;
                 micButton.classList.add('recording');
                 micButton.textContent = '⏹️';
@@ -357,12 +433,40 @@
 
         // Stop recording
         async function stopRecording() {
-            if (mediaRecorder && isRecording) {
-                mediaRecorder.stop();
+            if (isRecording) {
                 isRecording = false;
                 micButton.classList.remove('recording');
                 micButton.textContent = '🎤';
                 updateStatus('Processing...', 'processing');
+
+                // Combine all audio chunks
+                const totalLength = audioChunks.reduce((acc, chunk) => acc + chunk.length, 0);
+                const combinedData = new Float32Array(totalLength);
+                let offset = 0;
+                for (const chunk of audioChunks) {
+                    combinedData.set(chunk, offset);
+                    offset += chunk.length;
+                }
+
+                // Create AudioBuffer
+                const audioBuffer = audioContext.createBuffer(1, combinedData.length, audioContext.sampleRate);
+                audioBuffer.getChannelData(0).set(combinedData);
+
+                // Convert to WAV
+                const wavBlob = audioBufferToWav(audioBuffer);
+
+                // Stop all tracks
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+
+                // Close audio context
+                if (audioContext) {
+                    await audioContext.close();
+                }
+
+                // Process the audio
+                await processAudio(wavBlob);
             }
         }
 
