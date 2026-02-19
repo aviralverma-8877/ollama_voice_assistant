@@ -262,3 +262,91 @@ class AudioManager:
     def list_devices(self):
         """List all available audio devices"""
         return sd.query_devices()
+
+    def test_devices(self):
+        """
+        Test microphone and speaker
+        Records audio and plays it back
+        """
+        print("\n" + "=" * 70)
+        print("🎧 AUDIO DEVICE TEST")
+        print("=" * 70)
+
+        # Test speaker first
+        print("\n🔊 Testing speaker...")
+        print("   You should hear a beep sound")
+        input("\nPress Enter to play test beep...")
+
+        try:
+            self.play_beep()
+            print("✓ Beep played")
+
+            # Ask if user heard it
+            while True:
+                response = input("\nDid you hear the beep? [y/n]: ").strip().lower()
+                if response in ['y', 'yes']:
+                    print("✓ Speaker test passed")
+                    break
+                elif response in ['n', 'no']:
+                    print("⚠ Speaker may not be working correctly")
+                    print("  Check volume and device selection")
+                    break
+                else:
+                    print("❌ Please enter 'y' or 'n'")
+
+        except Exception as e:
+            print(f"❌ Error testing speaker: {e}")
+            return False
+
+        # Test microphone
+        print("\n🎤 Testing microphone...")
+        print("   Speak after the beep to test your microphone")
+        input("\nPress Enter to start microphone test...")
+
+        try:
+            # Play beep to signal start
+            self.play_beep()
+
+            # Record for 3 seconds
+            duration = 3.0
+            print(f"\n🔴 Recording for {duration} seconds...")
+            print("   Speak now: Say something like 'Testing, one, two, three'")
+
+            audio = sd.rec(
+                int(duration * self.sample_rate),
+                samplerate=self.sample_rate,
+                channels=self.channels,
+                device=self.input_device,
+                dtype='float32'
+            )
+            sd.wait()
+
+            print("✓ Recording complete")
+
+            # Check if audio was captured
+            max_amplitude = np.max(np.abs(audio))
+            if max_amplitude < 0.01:
+                print("\n⚠ Very low audio level detected")
+                print("  Microphone may not be working or volume is too low")
+            else:
+                print(f"\n✓ Audio captured (level: {max_amplitude:.3f})")
+
+                # Ask if user wants to hear playback
+                response = input("\nPlay back recording? [y/n]: ").strip().lower()
+                if response in ['y', 'yes']:
+                    print("\n🔊 Playing back your recording...")
+                    sd.play(audio, self.sample_rate, device=self.output_device)
+                    sd.wait()
+                    print("✓ Playback complete")
+
+            print("\n✓ Microphone test complete")
+
+        except Exception as e:
+            print(f"❌ Error testing microphone: {e}")
+            return False
+
+        print("\n" + "=" * 70)
+        print("✅ DEVICE TEST COMPLETE")
+        print("=" * 70)
+
+        return True

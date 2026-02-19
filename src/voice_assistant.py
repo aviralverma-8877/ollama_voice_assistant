@@ -21,21 +21,28 @@ from . import config
 class VoiceAssistant:
     """Main voice assistant controller"""
 
-    def __init__(self, interactive_audio_setup: bool = False, model: str = None):
+    def __init__(self, interactive_audio_setup: bool = False, model: str = None, test_devices: bool = False):
         """
         Initialize all components
 
         Args:
             interactive_audio_setup: If True, prompt user to select audio devices
             model: Ollama model name to use (uses config default if not provided)
+            test_devices: If True, test microphone and speaker after setup
         """
         print("=" * 60)
         print("🎙️  OLLAMA VOICE ASSISTANT")
         print("=" * 60)
 
         try:
-            # Initialize components
+            # Initialize audio manager
             self.audio_manager = AudioManager(interactive_setup=interactive_audio_setup)
+
+            # Test devices if requested
+            if test_devices:
+                self.audio_manager.test_devices()
+
+            # Initialize other components
             self.wake_word_detector = WakeWordDetector()
             self.stt = SpeechToText()
             self.tts = TextToSpeech()

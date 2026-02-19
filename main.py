@@ -18,6 +18,7 @@ if sys.platform == 'win32':
 
 from src.voice_assistant import VoiceAssistant
 from src.ollama_client import OllamaClient
+from src.audio_manager import AudioManager
 from src import config
 
 
@@ -96,6 +97,7 @@ def main():
     try:
         interactive_setup = False
         selected_model = None
+        test_devices = False
 
         # Ask user if they want to select audio devices (if enabled in config)
         if config.PROMPT_DEVICE_SELECTION:
@@ -117,6 +119,31 @@ def main():
                     print("\n\n👋 Goodbye!")
                     sys.exit(0)
 
+        # Ask user if they want to test audio devices (if enabled in config)
+        if config.PROMPT_DEVICE_TEST:
+            print("\n" + "=" * 70)
+            print("🎧 Audio Device Test")
+            print("=" * 70)
+            print("\nDo you want to test your microphone and speaker?")
+            print("  [1] Yes - Test my devices")
+            print("  [2] No  - Skip test")
+
+            while True:
+                try:
+                    choice = input("\nYour choice [1/2]: ").strip()
+                    if choice == '1':
+                        test_devices = True
+                        print("✓ Device test will run after initialization")
+                        break
+                    elif choice == '2':
+                        print("✓ Skipping device test")
+                        break
+                    else:
+                        print("❌ Please enter 1 or 2")
+                except KeyboardInterrupt:
+                    print("\n\n✓ Skipping device test")
+                    break
+
         # Ask user if they want to select Ollama model (if enabled in config)
         if config.PROMPT_MODEL_SELECTION:
             selected_model = select_ollama_model()
@@ -124,7 +151,8 @@ def main():
         # Initialize and run assistant
         assistant = VoiceAssistant(
             interactive_audio_setup=interactive_setup,
-            model=selected_model
+            model=selected_model,
+            test_devices=test_devices
         )
         assistant.run()
 

@@ -10,6 +10,7 @@ SAMPLE_RATE = 16000  # Vosk works best with 16kHz
 CHANNELS = 1  # Mono audio
 CHUNK_SIZE = 4000  # Audio chunk size for processing
 PROMPT_DEVICE_SELECTION = True  # Prompt user to select audio devices on startup
+PROMPT_DEVICE_TEST = True  # Prompt user to test audio devices after selection
 
 # Wake Word Configuration
 WAKE_WORD = "hello lamma"
