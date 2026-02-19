@@ -13,8 +13,14 @@ PROMPT_DEVICE_SELECTION = True  # Prompt user to select audio devices on startup
 PROMPT_DEVICE_TEST = True  # Prompt user to test audio devices after selection
 
 # Wake Word Configuration
-WAKE_WORD = "hello lamma"
-WAKE_WORD_THRESHOLD = 0.7  # Confidence threshold for wake word detection
+WAKE_WORD = "hello lamma"  # Change to something easier like "hello computer" or just "hello"
+# Recommended wake words (easier to recognize):
+# - "hello computer" (clear, simple, real words)
+# - "hello assistant" (clear, professional)
+# - "hey there" (casual, easy)
+# - "hello" (simplest option)
+# Avoid: Made-up words like "lamma" are harder for Vosk to recognize
+WAKE_WORD_THRESHOLD = 0.7  # Confidence threshold for wake word detection (not used with current matching)
 
 # Vosk Model Path (download required)
 # Download small model from: https://alphacephei.com/vosk/models
