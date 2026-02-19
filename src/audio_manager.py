@@ -4,6 +4,7 @@ Audio Manager - Handles audio input/output and optional Bluetooth connections
 
 import sounddevice as sd
 import numpy as np
+import time
 from typing import Optional, Callable
 from . import config
 
@@ -201,6 +202,8 @@ class AudioManager:
             numpy array of audio samples
         """
         print(f"🎤 Recording for {duration} seconds...")
+        # Wait 100ms for Bluetooth device latency
+        time.sleep(0.1)
         audio = sd.rec(
             int(duration * self.sample_rate),
             samplerate=self.sample_rate,
@@ -219,7 +222,7 @@ class AudioManager:
             callback: Function called with each audio chunk. Return False to stop recording.
             chunk_duration: Duration of each chunk in seconds
         """
-        def audio_callback(indata, frames, time, status):
+        def audio_callback(indata, frames, time_info, status):
             if status:
                 print(f"Audio status: {status}")
 
@@ -231,6 +234,8 @@ class AudioManager:
                 raise sd.CallbackAbort
 
         try:
+            # Wait 100ms for Bluetooth device latency before starting stream
+            time.sleep(0.1)
             with sd.InputStream(
                 callback=audio_callback,
                 channels=self.channels,
@@ -255,6 +260,8 @@ class AudioManager:
         t = np.linspace(0, duration, int(self.sample_rate * duration))
         beep = np.sin(2 * np.pi * frequency * t) * 0.3  # 30% volume
 
+        # Wait 100ms for Bluetooth device latency
+        time.sleep(0.1)
         # Play beep
         sd.play(beep, self.sample_rate, device=self.output_device)
         sd.wait()
@@ -312,6 +319,8 @@ class AudioManager:
             print(f"\n🔴 Recording for {duration} seconds...")
             print("   Speak now: Say something like 'Testing, one, two, three'")
 
+            # Wait 100ms for Bluetooth device latency
+            time.sleep(0.1)
             audio = sd.rec(
                 int(duration * self.sample_rate),
                 samplerate=self.sample_rate,
@@ -335,6 +344,8 @@ class AudioManager:
                 response = input("\nPlay back recording? [y/n]: ").strip().lower()
                 if response in ['y', 'yes']:
                     print("\n🔊 Playing back your recording...")
+                    # Wait 100ms for Bluetooth device latency
+                    time.sleep(0.1)
                     sd.play(audio, self.sample_rate, device=self.output_device)
                     sd.wait()
                     print("✓ Playback complete")

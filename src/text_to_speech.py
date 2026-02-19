@@ -3,6 +3,7 @@ Text-to-Speech - Converts text to speech using pyttsx3
 """
 
 import pyttsx3
+import time
 from typing import Optional
 
 
@@ -53,6 +54,8 @@ class TextToSpeech:
         print(f"💬 Speaking: {text[:100]}{'...' if len(text) > 100 else ''}")
 
         try:
+            # Wait 100ms for Bluetooth device latency
+            time.sleep(0.1)
             self.engine.say(text)
             self.engine.runAndWait()
         except Exception as e:

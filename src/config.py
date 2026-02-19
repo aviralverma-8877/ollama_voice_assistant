@@ -24,6 +24,8 @@ VOSK_MODEL_PATH = "models/vosk-model-small-en-us-0.15"
 # Bluetooth Configuration (optional - set to None to use default audio device)
 BLUETOOTH_DEVICE_NAME = None  # e.g., "JBL Flip 5" or None for default device
 BLUETOOTH_MAC_ADDRESS = None  # e.g., "XX:XX:XX:XX:XX:XX" or None
+# Note: 100ms delay is automatically applied before all audio I/O operations
+# to accommodate Bluetooth device latency
 
 # Session Configuration
 SESSION_TIMEOUT = 300  # Seconds of inactivity before ending session (5 minutes)
