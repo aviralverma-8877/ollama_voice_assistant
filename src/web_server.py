@@ -20,7 +20,8 @@ from . import config
 class WebServer:
     """Web server for voice assistant"""
 
-    def __init__(self, model: str = None, host: str = "0.0.0.0", port: int = 5000):
+    def __init__(self, model: str = None, host: str = "0.0.0.0", port: int = 5000,
+                 ssl_cert: str = None, ssl_key: str = None):
         """
         Initialize web server
 
@@ -28,6 +29,8 @@ class WebServer:
             model: Ollama model to use
             host: Host to bind to (default: 0.0.0.0 for network access)
             port: Port to listen on
+            ssl_cert: Path to SSL certificate file (for HTTPS)
+            ssl_key: Path to SSL private key file (for HTTPS)
         """
         self.app = Flask(__name__,
                         static_folder='../static',
@@ -36,6 +39,9 @@ class WebServer:
 
         self.host = host
         self.port = port
+        self.ssl_cert = ssl_cert
+        self.ssl_key = ssl_key
+        self.use_ssl = ssl_cert and ssl_key
 
         # Initialize components
         print("\n🌐 Initializing web server components...")
@@ -223,17 +229,25 @@ class WebServer:
         except:
             pass
 
+        # Determine protocol
+        protocol = "https" if self.use_ssl else "http"
+
         print("\n" + "=" * 70)
-        print("🌐 VOICE ASSISTANT WEB SERVER")
+        print(f"🌐 VOICE ASSISTANT WEB SERVER {'(HTTPS)' if self.use_ssl else '(HTTP)'}")
         print("=" * 70)
         print(f"\n🔗 Access the web interface from:")
 
         if self.host == "0.0.0.0":
-            print(f"   • Local:   http://localhost:{self.port}")
-            print(f"   • Network: http://{local_ip}:{self.port}")
+            print(f"   • Local:   {protocol}://localhost:{self.port}")
+            print(f"   • Network: {protocol}://{local_ip}:{self.port}")
             print(f"\n💡 Share the network URL with other devices on your local network")
         else:
-            print(f"   http://{self.host}:{self.port}")
+            print(f"   {protocol}://{self.host}:{self.port}")
+
+        if self.use_ssl:
+            print(f"\n🔐 SSL/TLS enabled")
+            print(f"   Certificate: {self.ssl_cert}")
+            print(f"   ⚠️  Self-signed certificate - browsers will show security warning")
 
         print(f"\n📋 Wake word: '{config.WAKE_WORD}' (optional in web mode)")
         print(f"🤖 Using model: {self.ollama.model}")
@@ -241,12 +255,18 @@ class WebServer:
         print("=" * 70 + "\n")
 
         try:
-            self.app.run(host=self.host, port=self.port, debug=False)
+            if self.use_ssl:
+                # Create SSL context
+                ssl_context = (self.ssl_cert, self.ssl_key)
+                self.app.run(host=self.host, port=self.port, debug=False, ssl_context=ssl_context)
+            else:
+                self.app.run(host=self.host, port=self.port, debug=False)
         except KeyboardInterrupt:
             print("\n\n⏹  Server stopped by user")
 
 
-def start_web_server(model: str = None, host: str = "0.0.0.0", port: int = 5000):
+def start_web_server(model: str = None, host: str = "0.0.0.0", port: int = 5000,
+                     ssl_cert: str = None, ssl_key: str = None):
     """
     Start the web server
 
@@ -254,6 +274,8 @@ def start_web_server(model: str = None, host: str = "0.0.0.0", port: int = 5000)
         model: Ollama model to use
         host: Host to bind to (default: 0.0.0.0 for network access)
         port: Port to listen on (default: 5000)
+        ssl_cert: Path to SSL certificate file (for HTTPS)
+        ssl_key: Path to SSL private key file (for HTTPS)
     """
-    server = WebServer(model=model, host=host, port=port)
+    server = WebServer(model=model, host=host, port=port, ssl_cert=ssl_cert, ssl_key=ssl_key)
     server.run()

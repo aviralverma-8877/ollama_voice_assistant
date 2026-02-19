@@ -242,8 +242,42 @@ def main():
             except KeyboardInterrupt:
                 print("\n\n✓ Using default settings")
 
+            # HTTPS/SSL Configuration
+            ssl_cert = None
+            ssl_key = None
+
+            if config.USE_HTTPS or os.path.exists(config.SSL_CERT_FILE):
+                print("\n" + "=" * 70)
+                print("🔐 HTTPS/SSL Configuration")
+                print("=" * 70)
+
+                if os.path.exists(config.SSL_CERT_FILE) and os.path.exists(config.SSL_KEY_FILE):
+                    print(f"\n✓ SSL certificate found: {config.SSL_CERT_FILE}")
+                    print(f"✓ SSL key found: {config.SSL_KEY_FILE}")
+                    print("\nDo you want to enable HTTPS?")
+                    print("  [1] Yes - Use HTTPS (secure)")
+                    print("  [2] No  - Use HTTP (default)")
+
+                    try:
+                        https_choice = input("\nYour choice [1/2]: ").strip()
+                        if https_choice == '1':
+                            ssl_cert = config.SSL_CERT_FILE
+                            ssl_key = config.SSL_KEY_FILE
+                            print("✓ HTTPS enabled")
+                        else:
+                            print("✓ Using HTTP")
+                    except KeyboardInterrupt:
+                        print("\n\n✓ Using HTTP")
+                else:
+                    print("\n⚠️  SSL certificate not found")
+                    print("\nTo enable HTTPS:")
+                    print("  1. Run: python generate_cert.py")
+                    print("  2. Restart the server")
+                    print("\nContinuing with HTTP...")
+
             # Start web server
-            start_web_server(model=selected_model, host=host, port=port)
+            start_web_server(model=selected_model, host=host, port=port,
+                           ssl_cert=ssl_cert, ssl_key=ssl_key)
             return
 
         # CLI Mode (original behavior)

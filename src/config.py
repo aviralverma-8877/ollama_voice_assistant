@@ -41,3 +41,8 @@ MAX_CONTEXT_MESSAGES = 10  # Maximum conversation history to maintain
 # Beep Sound Configuration
 BEEP_FREQUENCY = 1000  # Hz
 BEEP_DURATION = 0.2  # Seconds
+
+# Web Server SSL/HTTPS Configuration
+USE_HTTPS = False  # Set to True to enable HTTPS
+SSL_CERT_FILE = "cert.pem"  # Path to SSL certificate file
+SSL_KEY_FILE = "key.pem"  # Path to SSL private key file

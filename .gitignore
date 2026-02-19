@@ -32,3 +32,11 @@ Thumbs.db
 
 # Logs
 *.log
+
+# SSL Certificates (security - never commit private keys)
+*.pem
+*.key
+*.crt
+*.cer
+cert.*
+key.*

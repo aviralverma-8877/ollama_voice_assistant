@@ -15,5 +15,8 @@ requests==2.31.0
 Flask==3.0.0
 flask-cors==4.0.0
 
+# SSL/HTTPS Support (optional - for certificate generation)
+cryptography>=41.0.0
+
 # Audio file handling for beep sound and resampling
 scipy>=1.11.0,<2.0.0  # Flexible version range for better compatibility
