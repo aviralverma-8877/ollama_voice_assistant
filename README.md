@@ -65,11 +65,13 @@ python main.py
 - Always listening for wake word
 
 ### Web Mode (New!)
-- Beautiful browser interface at http://127.0.0.1:5000
+- Beautiful browser interface accessible on local network
+- Local access: http://localhost:5000
+- Network access: http://YOUR-IP:5000 (shown when server starts)
 - Click button to record
 - Visual conversation history
 - No wake word needed
-- Access from any device on your network
+- Access from any device on your network (phones, tablets, laptops)
 
 See [WEB_MODE_GUIDE.md](guide/WEB_MODE_GUIDE.md) for detailed web mode instructions!
 

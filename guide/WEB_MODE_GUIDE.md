@@ -46,7 +46,7 @@ You can use the default settings or customize:
 
 ```
 Default settings:
-  Host: 127.0.0.1
+  Host: 0.0.0.0 (accessible on local network)
   Port: 5000
 
 Use custom settings?
@@ -54,7 +54,7 @@ Use custom settings?
   [2] No  - Use defaults
 ```
 
-**Defaults work great for most users!**
+**Defaults work great for most users!** The server will be accessible from any device on your local network.
 
 ### Step 4: Open Your Browser
 
@@ -63,8 +63,11 @@ Once the server starts, you'll see:
 ```
 🌐 VOICE ASSISTANT WEB SERVER
 
-🔗 Open your browser and navigate to:
-   http://127.0.0.1:5000
+🔗 Access the web interface from:
+   • Local:   http://localhost:5000
+   • Network: http://192.168.1.100:5000
+
+💡 Share the network URL with other devices on your local network
 
 📋 Wake word: 'computer' (optional in web mode)
 🤖 Using model: gemma3:4b
@@ -72,7 +75,8 @@ Once the server starts, you'll see:
 ⚠  Press Ctrl+C to stop the server
 ```
 
-**Click the link** or open your browser and go to: `http://127.0.0.1:5000`
+**Access locally:** `http://localhost:5000`
+**Access from network:** Use the network URL shown (your actual IP will be displayed)
 
 ### Step 5: Use the Web Interface
 
@@ -127,17 +131,19 @@ If port 5000 is already in use, you can change it:
 # Then enter your desired port (e.g., 8080, 3000, etc.)
 ```
 
-### Allow Remote Access
+### Network Access (Default)
 
-To access from other devices on your network:
+By default, the server is accessible on your local network:
+- **Local:** `http://localhost:5000`
+- **Network:** `http://YOUR_IP:5000` (shown when server starts)
 
+To restrict to localhost only:
 ```python
-# When prompted, enter:
-# Host: 0.0.0.0
-# Port: 5000 (or any port you prefer)
+# When prompted, select "Yes - Let me configure"
+# Then enter:
+# Host: 127.0.0.1
+# Port: 5000
 ```
-
-Then access from other devices using: `http://YOUR_COMPUTER_IP:5000`
 
 ### Change Model
 
@@ -190,17 +196,19 @@ pip install -r requirements.txt
 ### Can't Access from Another Device
 
 **Solutions:**
-1. Make sure you configured `host: 0.0.0.0`
-2. Check your firewall settings
-3. Ensure both devices are on the same network
-4. Use your computer's IP address, not 127.0.0.1
+1. The default settings should work (host: 0.0.0.0)
+2. Check your firewall settings - allow port 5000
+3. Ensure both devices are on the same network (same WiFi)
+4. Use the network URL shown when server starts
+5. Make sure you're using your computer's IP, not localhost or 127.0.0.1
 
 ## 🔒 Security Notes
 
-- **Local Network Only**: By default, the server only accepts connections from your computer (127.0.0.1)
+- **Local Network Access**: By default, the server is accessible to all devices on your local network (0.0.0.0)
 - **No Authentication**: Web mode doesn't have password protection
 - **Don't Expose to Internet**: This is meant for local/trusted network use only
 - **Conversation History**: Stored in memory only, cleared when server restarts
+- **Trust Your Network**: Only use on networks you trust, as anyone on the network can access the assistant
 
 ## 💡 Tips
 
@@ -218,13 +226,13 @@ pip install -r requirements.txt
 
 Yes, you can use it on your phone!
 
-1. Start the server with `host: 0.0.0.0`
-2. Find your computer's IP address:
-   - Windows: `ipconfig`
-   - Mac/Linux: `ifconfig`
-3. Open your phone's browser
-4. Go to: `http://YOUR_COMPUTER_IP:5000`
+1. Start the server (default settings work!)
+2. Check the network URL displayed when server starts
+3. Open your phone's browser (connect to same WiFi)
+4. Go to the network URL shown (e.g., `http://192.168.1.100:5000`)
 5. Tap the microphone to speak
+
+**Tip:** The server automatically displays your network IP when it starts!
 
 ## 🎯 When to Use Each Mode
 
@@ -268,9 +276,13 @@ Your choice [1/2]: 2
 # 4. Use defaults [2]
 Your choice [1/2]: 2
 
-# 5. Open browser to http://127.0.0.1:5000
+# 5. Server shows:
+#    • Local:   http://localhost:5000
+#    • Network: http://192.168.1.100:5000
 
-# 6. Click microphone and speak!
+# 6. Open browser to localhost URL (or network URL from phone)
+
+# 7. Click microphone and speak!
 ```
 
 That's it! You're ready to use the voice assistant in web mode. Enjoy! 🎉

@@ -6,6 +6,7 @@ import os
 import io
 import tempfile
 import wave
+import socket
 from flask import Flask, render_template, request, jsonify, send_file
 from flask_cors import CORS
 import numpy as np
@@ -19,13 +20,13 @@ from . import config
 class WebServer:
     """Web server for voice assistant"""
 
-    def __init__(self, model: str = None, host: str = "127.0.0.1", port: int = 5000):
+    def __init__(self, model: str = None, host: str = "0.0.0.0", port: int = 5000):
         """
         Initialize web server
 
         Args:
             model: Ollama model to use
-            host: Host to bind to
+            host: Host to bind to (default: 0.0.0.0 for network access)
             port: Port to listen on
         """
         self.app = Flask(__name__,
@@ -211,11 +212,29 @@ class WebServer:
 
     def run(self):
         """Start the web server"""
+        # Get local IP address
+        local_ip = "localhost"
+        try:
+            # Get the local IP address
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            local_ip = s.getsockname()[0]
+            s.close()
+        except:
+            pass
+
         print("\n" + "=" * 70)
         print("🌐 VOICE ASSISTANT WEB SERVER")
         print("=" * 70)
-        print(f"\n🔗 Open your browser and navigate to:")
-        print(f"   http://{self.host}:{self.port}")
+        print(f"\n🔗 Access the web interface from:")
+
+        if self.host == "0.0.0.0":
+            print(f"   • Local:   http://localhost:{self.port}")
+            print(f"   • Network: http://{local_ip}:{self.port}")
+            print(f"\n💡 Share the network URL with other devices on your local network")
+        else:
+            print(f"   http://{self.host}:{self.port}")
+
         print(f"\n📋 Wake word: '{config.WAKE_WORD}' (optional in web mode)")
         print(f"🤖 Using model: {self.ollama.model}")
         print("\n⚠  Press Ctrl+C to stop the server")
@@ -227,13 +246,13 @@ class WebServer:
             print("\n\n⏹  Server stopped by user")
 
 
-def start_web_server(model: str = None, host: str = "127.0.0.1", port: int = 5000):
+def start_web_server(model: str = None, host: str = "0.0.0.0", port: int = 5000):
     """
     Start the web server
 
     Args:
         model: Ollama model to use
-        host: Host to bind to (default: 127.0.0.1)
+        host: Host to bind to (default: 0.0.0.0 for network access)
         port: Port to listen on (default: 5000)
     """
     server = WebServer(model=model, host=host, port=port)
