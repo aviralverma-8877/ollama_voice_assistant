@@ -66,7 +66,7 @@ def test_speech_recognition():
             print("\n🎉 Speech recognition is working!")
 
             # Check if it contains wake word
-            wake_word = "hello lamma"
+            wake_word = "computer"
             if wake_word in text.lower():
                 print(f"\n🎯 BONUS: Detected wake word '{wake_word}' in the text!")
 
