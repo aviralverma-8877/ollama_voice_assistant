@@ -34,6 +34,16 @@ class AudioManager:
         try:
             devices = sd.query_devices()
 
+            # Get default devices
+            try:
+                default_input = sd.default.device[0]
+                default_output = sd.default.device[1]
+                default_input_name = devices[default_input]['name'] if isinstance(default_input, int) else "System Default"
+                default_output_name = devices[default_output]['name'] if isinstance(default_output, int) else "System Default"
+            except:
+                default_input_name = "System Default"
+                default_output_name = "System Default"
+
             # Show all available devices
             print("\n" + "=" * 70)
             print("AUDIO DEVICE SELECTION")
@@ -45,7 +55,8 @@ class AudioManager:
             for idx, device in enumerate(devices):
                 if device['max_input_channels'] > 0:
                     input_devices.append((idx, device))
-                    print(f"  [{len(input_devices)}] {device['name']}")
+                    default_marker = " [DEFAULT]" if (isinstance(default_input, int) and idx == default_input) else ""
+                    print(f"  [{len(input_devices)}] {device['name']}{default_marker}")
 
             # List output devices
             print("\n📤 Available OUTPUT devices (Speakers):")
@@ -53,10 +64,12 @@ class AudioManager:
             for idx, device in enumerate(devices):
                 if device['max_output_channels'] > 0:
                     output_devices.append((idx, device))
-                    print(f"  [{len(output_devices)}] {device['name']}")
+                    default_marker = " [DEFAULT]" if (isinstance(default_output, int) and idx == default_output) else ""
+                    print(f"  [{len(output_devices)}] {device['name']}{default_marker}")
 
             # Select input device
             print("\n" + "-" * 70)
+            print(f"ℹ️  Default input: {default_input_name}")
             while True:
                 try:
                     choice = input(f"\nSelect INPUT device [1-{len(input_devices)}] or 0 for default: ").strip()
@@ -64,7 +77,7 @@ class AudioManager:
 
                     if choice_num == 0:
                         self.input_device = None
-                        print("✓ Using default input device")
+                        print(f"✓ Using default input device: {default_input_name}")
                         break
                     elif 1 <= choice_num <= len(input_devices):
                         device_idx, device_info = input_devices[choice_num - 1]
@@ -83,6 +96,7 @@ class AudioManager:
 
             # Select output device
             print("\n" + "-" * 70)
+            print(f"ℹ️  Default output: {default_output_name}")
             while True:
                 try:
                     choice = input(f"\nSelect OUTPUT device [1-{len(output_devices)}] or 0 for default: ").strip()
@@ -90,7 +104,7 @@ class AudioManager:
 
                     if choice_num == 0:
                         self.output_device = None
-                        print("✓ Using default output device")
+                        print(f"✓ Using default output device: {default_output_name}")
                         break
                     elif 1 <= choice_num <= len(output_devices):
                         device_idx, device_info = output_devices[choice_num - 1]
@@ -113,12 +127,12 @@ class AudioManager:
             if self.input_device is not None:
                 print(f"  Input:  {devices[self.input_device]['name']}")
             else:
-                print(f"  Input:  Default")
+                print(f"  Input:  {default_input_name} (default)")
 
             if self.output_device is not None:
                 print(f"  Output: {devices[self.output_device]['name']}")
             else:
-                print(f"  Output: Default")
+                print(f"  Output: {default_output_name} (default)")
             print("=" * 70)
 
         except Exception as e:
@@ -151,16 +165,26 @@ class AudioManager:
             else:
                 print("\n✓ Using default audio devices")
 
-            # Print selected devices
-            if self.input_device:
-                print(f"  Input: {devices[self.input_device]['name']}")
-            else:
-                print(f"  Input: Default")
+            # Get default device names
+            try:
+                default_input = sd.default.device[0]
+                default_output = sd.default.device[1]
+                default_input_name = devices[default_input]['name'] if isinstance(default_input, int) else "System Default"
+                default_output_name = devices[default_output]['name'] if isinstance(default_output, int) else "System Default"
+            except:
+                default_input_name = "System Default"
+                default_output_name = "System Default"
 
-            if self.output_device:
+            # Print selected devices
+            if self.input_device is not None:
+                print(f"  Input:  {devices[self.input_device]['name']}")
+            else:
+                print(f"  Input:  {default_input_name} (default)")
+
+            if self.output_device is not None:
                 print(f"  Output: {devices[self.output_device]['name']}")
             else:
-                print(f"  Output: Default")
+                print(f"  Output: {default_output_name} (default)")
 
         except Exception as e:
             print(f"Warning: Could not enumerate audio devices: {e}")

@@ -26,7 +26,9 @@ Your choice [1/2]:
 
 ### Option 1: Manual Selection
 
-If you choose **[1] Yes**, you'll see all available devices:
+If you choose **[1] Yes**, you'll see all available devices.
+
+**Note**: Default devices are marked with `[DEFAULT]` and shown before selection:
 
 ```
 ======================================================================
@@ -35,23 +37,25 @@ AUDIO DEVICE SELECTION
 
 📥 Available INPUT devices (Microphones):
   [1] Microsoft Sound Mapper - Input
-  [2] Microphone Array on SoundWire Device
+  [2] Microphone Array on SoundWire Device [DEFAULT]
   [3] Webcam Microphone
   [4] Headset Microphone
 
 📤 Available OUTPUT devices (Speakers):
   [1] Microsoft Sound Mapper - Output
-  [2] Speakers (Cirrus Logic XU)
+  [2] Speakers (Cirrus Logic XU) [DEFAULT]
   [3] Headphones
   [4] Bluetooth Speaker
 
 ----------------------------------------------------------------------
+ℹ️  Default input: Microphone Array on SoundWire Device
 
 Select INPUT device [1-4] or 0 for default: 3
 
 ✓ Selected: Webcam Microphone
 
 ----------------------------------------------------------------------
+ℹ️  Default output: Speakers (Cirrus Logic XU)
 
 Select OUTPUT device [1-4] or 0 for default: 4
 
@@ -62,6 +66,25 @@ SELECTED DEVICES:
 ======================================================================
   Input:  Webcam Microphone
   Output: Bluetooth Speaker
+======================================================================
+```
+
+**If you select default (0)**:
+
+```
+Select INPUT device [1-4] or 0 for default: 0
+
+✓ Using default input device: Microphone Array on SoundWire Device
+
+Select OUTPUT device [1-4] or 0 for default: 0
+
+✓ Using default output device: Speakers (Cirrus Logic XU)
+
+======================================================================
+SELECTED DEVICES:
+======================================================================
+  Input:  Microphone Array on SoundWire Device (default)
+  Output: Speakers (Cirrus Logic XU) (default)
 ======================================================================
 ```
 
@@ -93,6 +116,8 @@ This will automatically find and use any device with "JBL Flip 5" in its name.
 
 ## Testing Device Selection
 
+### Test Device Selection Interface
+
 Test the device selection feature without starting the full assistant:
 
 ```bash
@@ -103,6 +128,21 @@ This will:
 1. Show all available devices
 2. Let you select input/output
 3. Play a test beep on the selected output device
+
+### Show System Default Devices
+
+See which devices are configured as your system defaults:
+
+```bash
+python -m test.test_default_devices
+```
+
+This shows:
+- Your default input device (microphone)
+- Your default output device (speaker)
+- Device details (channels, sample rate, etc.)
+
+This is helpful to know which devices will be used when you select option [0] or [2] (default).
 
 ## Common Scenarios
 
